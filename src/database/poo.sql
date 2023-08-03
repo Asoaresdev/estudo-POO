@@ -1,0 +1,7 @@
+-- Active: 1691098610947@@127.0.0.1@1433
+CREATE TABLE video(
+    id TEXT  UNIQUE PRIMARY KEY NOT NULL,
+    title TEXT NOT NULL,
+    dur_seconds REAL NOT NULL,
+    date_upload TEXT DEFAULT (DATETIME())NOT NULL
+);
