@@ -6,32 +6,32 @@ export class Video {
         private dateUpload: string,
     ){}
 
-    public getId = (value:string): void => {
+    public setId = (value:string): void => {
         this.id=value
     } 
-    public setId = (): string => {
+    public getId = (): string => {
         return this.id
     } 
 
     
-    public getTitle = (value:string): void => {
+    public setTitle  = (value:string): void => {
         this.title=value
     } 
-    public setTitle = (): string => {
+    public getTitle = (): string => {
         return this.title
     } 
 
-    public getDurSeconds = (value:number): void => {
+    public setDurSeconds  = (value:number): void => {
         this.durSeconds=value
     } 
-    public setDurSeconds = (): number => {
+    public getDurSeconds = (): number => {
         return this.durSeconds
     } 
 
-    public getDateUpload = (value:string): void => {
+    public setDateUpload  = (value:string): void => {
         this.dateUpload = value
     } 
-    public setDateUpload = (): string => {
+    public getDateUpload = (): string => {
         return this.dateUpload
     } 
 }
