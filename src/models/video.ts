@@ -1,4 +1,4 @@
-class video {
+export class Video {
     constructor(
         private id: string,
         private title: string,
@@ -34,6 +34,4 @@ class video {
     public setDateUpload = (): string => {
         return this.dateUpload
     } 
-
-
 }
