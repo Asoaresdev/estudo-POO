@@ -2,6 +2,7 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import { db } from "./database/knex"
 import { Video } from "./models/Video"
+import { TVideo, videoDB } from "./models/types"
 
 const app = express()
 
@@ -62,26 +63,110 @@ app.post("/videos", async (req: Request, res: Response) => {
         const [validateId] = await db("video").where({ id: id })
         console.log(validateId);
 
-        if(validateId){
+        if (validateId) {
             res.statusCode = 400
             throw new Error("ID já cadastrado")
         }
         const newVideo = new Video(
             id,
-            title, 
+            title,
             durSeconds,
             new Date().toISOString()
         )
-        console.log(newVideo);
-        
-        res.status(201).send(validateId)
+        const newVideoDB:videoDB = {
+            id: newVideo.getId(),
+            title: newVideo.getTitle(),
+            dur_seconds: newVideo.getDurSeconds(),
+            date_upload: newVideo.getDateUpload()
+        }
+            await db("video").insert(newVideoDB)
+        res.status(201).send("Video cadastrado com sucesso")
     } catch (error) {
-        if(res.statusCode === 200){
+        if (res.statusCode === 200) {
             res.status(500)
         }
-        if(error instanceof Error){
+        if (error instanceof Error) {
             res.send(error.message)
-        }else{
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
+
+
+app.put("/videos/:id", async (req: Request, res: Response) => {
+    try {
+        const updateId = req.params.id
+        const { title, durSeconds, dateUpload } = req.body
+
+        if (typeof updateId !== "string") {
+            res.status(400)
+            throw new Error("'ID' deve ser string")
+        }
+
+        const [validatedId]: TVideo[] = await db("video").where({ id: updateId })
+
+        if (!validatedId) {
+            res.status(404)
+            throw new Error("'id' não encontrado")
+        } else {
+
+            console.log(validatedId);
+
+            const updateVideo = {
+                id: updateId,
+                title: title || validatedId.title,
+                dur_seconds: durSeconds || validatedId.durSeconds,
+                date_upload: dateUpload || validatedId.dateUpload
+            }
+
+            await db("video").update(updateVideo).where({ id: updateId })
+            res.status(200).send("Vídeo alterado com sucesso")
+        }
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
+
+
+app.delete("/videos/:id", async (req: Request, res: Response) => {
+    try {
+        const deleteId = req.params.id
+
+        if (typeof deleteId !== "string") {
+            res.status(400)
+            throw new Error("'ID' deve ser string")
+        }
+
+        const [validatedId]: TVideo[] = await db("video").where({ id: deleteId })
+
+        if (!validatedId) {
+            res.status(404)
+            throw new Error("'id' não encontrado")
+        } else {
+            await db("video").delete().where({ id: deleteId })
+            res.status(200).send("Vídeo deletado com sucesso")
+        }
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
             res.send("Erro inesperado")
         }
     }
