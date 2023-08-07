@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
-import { db } from "./database/knex"
+import { db } from "./database/BaseDatabase"
 import { Video } from "./models/video"
 import { TVideo, videoDB } from "./models/types"
+import { VideoDatabase } from "./database/VideoDatabase"
 
 const app = express()
 
@@ -19,15 +20,19 @@ app.get("/ping", (req: Request, res: Response) => {
 
 app.get("/videos", async (req: Request, res: Response) => {
     try {
-        const result = await db("video")
+        // const result = await db("video")
+        const videoDatabase = new VideoDatabase()
+        const result = await videoDatabase.getAllVideos()
+        
         const videos: Video[] = result.map((videoDB) =>
             new Video(
                 videoDB.id,
                 videoDB.title,
-                videoDB.durSeconds,
-                videoDB.dateUpload
+                videoDB.dur_seconds,
+                videoDB.date_upload
             )
         )
+        
         res.status(200).send(videos)
 
     } catch (error) {
@@ -43,6 +48,7 @@ app.get("/videos", async (req: Request, res: Response) => {
         }
     }
 })
+
 
 app.post("/videos", async (req: Request, res: Response) => {
     try {
