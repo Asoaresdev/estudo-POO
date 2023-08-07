@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
 import { db } from "./database/knex"
-import { Video } from "./models/Video"
+import { Video } from "./models/video"
 import { TVideo, videoDB } from "./models/types"
 
 const app = express()
