@@ -32,4 +32,10 @@ export class VideoDatabase extends BaseDatabase {
             .update(editVideo)
             .where({id:editId})
     }
+    public async deleteVideo (id:string) {
+        await BaseDatabase
+            .connection(VideoDatabase.TABLE_VIDEO)
+            .delete()
+            .where({id:id})
+    }
 }

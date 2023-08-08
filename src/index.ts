@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
-import { db } from "./database/BaseDatabase"
 import { Video } from "./models/video"
-import { TVideo, videoDB } from "./models/types"
+import { videoDB } from "./models/types"
 import { VideoDatabase } from "./database/VideoDatabase"
 
 const app = express()
@@ -36,8 +35,6 @@ app.get("/videos", async (req: Request, res: Response) => {
         res.status(200).send(videos)
 
     } catch (error) {
-        console.log(error);
-
         if (res.statusCode === 200) {
             res.status(500)
         }
@@ -121,31 +118,37 @@ app.put("/videos/:id", async (req: Request, res: Response) => {
             throw new Error("'id' não encontrado")
         } else {
 
-            console.log(validatedId);
+            // console.log(validatedId);
             
-            const newUpdateVideo = new Video(
-                updateId,
-                title, 
-                durSeconds, 
-                dateUpload
-            )
-            console.log(newUpdateVideo.getDurSeconds());
+
+            // ========entender==========
+
+            // const newUpdateVideo = new Video(
+            //     updateId,
+            //     title, 
+            //     durSeconds, 
+            //     dateUpload
+            // )
             
+
+            // const updateVideo: videoDB = {
+            //     id: updateId,
+            //     title: title || newUpdateVideo.getTitle(),
+            //     dur_seconds: durSeconds || newUpdateVideo.getDurSeconds(),
+            //     date_upload: dateUpload || newUpdateVideo.getDateUpload()
+            // }
 
             const updateVideo: videoDB = {
                 id: updateId,
-                title: title || newUpdateVideo.getTitle(),
-                dur_seconds: durSeconds || newUpdateVideo.getDurSeconds(),
-                date_upload: dateUpload || newUpdateVideo.getDateUpload()
+                title: title ,
+                dur_seconds: durSeconds ,
+                date_upload: dateUpload  
             }
-
-            // await db("video").update(updateVideo).where({ id: updateId })
+            
             await videoDatabase.editVideo(updateVideo, updateId)
             res.status(200).send("Vídeo alterado com sucesso")
         }
     } catch (error) {
-        console.log(error)
-
         if (req.statusCode === 200) {
             res.status(500)
         }
@@ -168,18 +171,19 @@ app.delete("/videos/:id", async (req: Request, res: Response) => {
             throw new Error("'ID' deve ser string")
         }
 
-        const [validatedId]: TVideo[] = await db("video").where({ id: deleteId })
+        // const [validatedId]: TVideo[] = await db("video").where({ id: deleteId })
+            const videoDatabase = new VideoDatabase()
+            const validatedId = await videoDatabase.findVideoById(deleteId)
 
         if (!validatedId) {
             res.status(404)
             throw new Error("'id' não encontrado")
         } else {
-            await db("video").delete().where({ id: deleteId })
+            // await db("video").delete().where({ id: deleteId })
+            await videoDatabase.deleteVideo(deleteId)
             res.status(200).send("Vídeo deletado com sucesso")
         }
     } catch (error) {
-        console.log(error)
-
         if (req.statusCode === 200) {
             res.status(500)
         }
