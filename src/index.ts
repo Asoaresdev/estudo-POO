@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
-import { db } from "./database/BaseDatabase"
 import { Video } from "./models/video"
-import { TVideo, videoDB } from "./models/types"
+import { videoDB } from "./models/types"
 import { VideoDatabase } from "./database/VideoDatabase"
 
 const app = express()
@@ -36,8 +35,6 @@ app.get("/videos", async (req: Request, res: Response) => {
         res.status(200).send(videos)
 
     } catch (error) {
-        console.log(error);
-
         if (res.statusCode === 200) {
             res.status(500)
         }
@@ -66,8 +63,9 @@ app.post("/videos", async (req: Request, res: Response) => {
             throw new Error("'durSeconds' deve ser number")
         }
 
-        const [validateId] = await db("video").where({ id: id })
-        console.log(validateId);
+        const videoDatabase = new VideoDatabase()
+        const validateId = await videoDatabase.findVideoById(id)
+        // const [validateId] = await db("video").where({ id: id })
 
         if (validateId) {
             res.statusCode = 400
@@ -85,7 +83,8 @@ app.post("/videos", async (req: Request, res: Response) => {
             dur_seconds: newVideo.getDurSeconds(),
             date_upload: newVideo.getDateUpload()
         }
-            await db("video").insert(newVideoDB)
+            // await db("video").insert(newVideoDB)
+            await videoDatabase.insertVideo(newVideoDB)
         res.status(201).send("Video cadastrado com sucesso")
     } catch (error) {
         if (res.statusCode === 200) {
@@ -110,28 +109,46 @@ app.put("/videos/:id", async (req: Request, res: Response) => {
             throw new Error("'ID' deve ser string")
         }
 
-        const [validatedId]: TVideo[] = await db("video").where({ id: updateId })
+        // const [validatedId]: TVideo[] = await db("video").where({ id: updateId })
+        const videoDatabase = new VideoDatabase()
+        const validatedId = await  videoDatabase.findVideoById(updateId)
 
         if (!validatedId) {
             res.status(404)
             throw new Error("'id' não encontrado")
         } else {
 
-            console.log(validatedId);
+            // console.log(validatedId);
+            
 
-            const updateVideo = {
+            // ========entender==========
+
+            // const newUpdateVideo = new Video(
+            //     updateId,
+            //     title, 
+            //     durSeconds, 
+            //     dateUpload
+            // )
+            
+
+            // const updateVideo: videoDB = {
+            //     id: updateId,
+            //     title: title || newUpdateVideo.getTitle(),
+            //     dur_seconds: durSeconds || newUpdateVideo.getDurSeconds(),
+            //     date_upload: dateUpload || newUpdateVideo.getDateUpload()
+            // }
+
+            const updateVideo: videoDB = {
                 id: updateId,
-                title: title || validatedId.title,
-                dur_seconds: durSeconds || validatedId.durSeconds,
-                date_upload: dateUpload || validatedId.dateUpload
+                title: title ,
+                dur_seconds: durSeconds ,
+                date_upload: dateUpload  
             }
-
-            await db("video").update(updateVideo).where({ id: updateId })
+            
+            await videoDatabase.editVideo(updateVideo, updateId)
             res.status(200).send("Vídeo alterado com sucesso")
         }
     } catch (error) {
-        console.log(error)
-
         if (req.statusCode === 200) {
             res.status(500)
         }
@@ -154,18 +171,19 @@ app.delete("/videos/:id", async (req: Request, res: Response) => {
             throw new Error("'ID' deve ser string")
         }
 
-        const [validatedId]: TVideo[] = await db("video").where({ id: deleteId })
+        // const [validatedId]: TVideo[] = await db("video").where({ id: deleteId })
+            const videoDatabase = new VideoDatabase()
+            const validatedId = await videoDatabase.findVideoById(deleteId)
 
         if (!validatedId) {
             res.status(404)
             throw new Error("'id' não encontrado")
         } else {
-            await db("video").delete().where({ id: deleteId })
+            // await db("video").delete().where({ id: deleteId })
+            await videoDatabase.deleteVideo(deleteId)
             res.status(200).send("Vídeo deletado com sucesso")
         }
     } catch (error) {
-        console.log(error)
-
         if (req.statusCode === 200) {
             res.status(500)
         }
