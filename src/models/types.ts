@@ -1,11 +1,11 @@
-export type TVideo = {
+export interface VideoType  {
     id: string,
     title: string,
-    durSeconds: string,
+    durSeconds: number,
     dateUpload: string
 }
 
-export interface videoDB {
+export interface VideoDB {
     id: string,
     title: string,
     dur_seconds: number,
