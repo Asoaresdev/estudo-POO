@@ -1,4 +1,4 @@
-# Exercício - POO 1
+# Estudo - POO 
 
 <strong>Prática dos conceitos de POO.</strong>
 <br><br>
