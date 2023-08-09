@@ -3,7 +3,7 @@ import cors from "cors"
 import { Video } from "./models/video"
 import { VideoType, VideoDB } from "./models/types"
 import { VideoDatabase } from "./database/VideoDatabase"
-import { VideoController } from "./controller/videoController"
+import { VideoController } from "./controller/VideoController"
 
 const app = express()
 

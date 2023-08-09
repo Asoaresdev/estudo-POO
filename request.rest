@@ -1,0 +1,28 @@
+GET http://localhost:3003/ping
+
+###
+GET http://localhost:3003/videos
+
+###
+POST http://localhost:3003/videos
+Content-Type: application/json
+
+{
+    "id": "teste101",
+    "title": "testando o delete",
+    "durSeconds": 100
+}
+
+###
+
+PUT http://localhost:3003/videos/teste100
+Content-Type: application/json
+
+{
+    "title": "testando edição usando controller"
+}
+
+
+###
+
+DELETE  http://localhost:3003/videos/teste101
