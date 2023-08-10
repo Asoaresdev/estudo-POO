@@ -8,21 +8,20 @@ POST http://localhost:3003/videos
 Content-Type: application/json
 
 {
-    "id": "teste101",
-    "title": "testando o delete",
+    "id": "testedelete",
+    "title": "testando delete",
     "durSeconds": 100
 }
 
 ###
-
 PUT http://localhost:3003/videos/teste100
 Content-Type: application/json
 
 {
-    "title": "testando edição usando controller"
+    "title": "testando edição usando business"
 }
 
 
 ###
 
-DELETE  http://localhost:3003/videos/teste101
+DELETE  http://localhost:3003/videos/testedelete
