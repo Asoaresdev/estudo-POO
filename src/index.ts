@@ -17,6 +17,9 @@ app.listen(3003, () => {
 app.get("/ping", (req: Request, res: Response) => {
     res.status(200).send("PONG")
 })
+app.get("/", (req: Request, res: Response) => {
+    res.status(200).send("Bem vindo(a) a API")
+})
 
 const videoController = new VideoController()
 
