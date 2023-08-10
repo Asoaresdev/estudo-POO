@@ -9,3 +9,9 @@ Usando:
 - [x] Express
 - [x] Knex
 - [x] SQLite
+
+link do deploy da API:
+
+https://crud-estudo-poo.onrender.com/videos
+
+Em caso de demora na resposta, é devido ao serviço ser gratuito.
